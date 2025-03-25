@@ -16,15 +16,15 @@ from ICLSTM import MyICLSTMCell
 # set the seed for reproducibility
 tf.random.set_seed(42)
 # 读取数据
-data = pd.read_csv('simulation_output_short.csv')
+data = pd.read_csv('simulation_output_0325.csv')
 
 # 配置
-sequence_length = 40
+sequence_length = 10
 predict_columns = ['Z01_T', 'Z02_T', 'Z03_T', 'Z04_T', 'Z05_T', 
-                   'Z06_T', 'Z07_T', 'Z08_T', 'Bd_FracCh_Bat', 'Fa_Pw_Prod', 'Fa_E_All']
+                   'Z06_T', 'Z07_T', 'Z08_T', 'Bd_FracCh_Bat', 'Fa_Pw_Prod', 'Fa_E_All', 'Fa_E_HVAC']
 
 # 去除目标变量构建输入特征索引
-input_columns = [col for col in data.columns if col not in predict_columns]
+input_columns = [col for col in data.columns]
 input_indices = [data.columns.get_loc(col) for col in input_columns]
 target_indices = [data.columns.get_loc(col) for col in predict_columns]
 # 转成 numpy
@@ -46,10 +46,12 @@ Y = np.array(Y)
 # 分割数据集
 X_train, X_test, y_train, y_test = train_test_split(X, Y, 
                                                     test_size=0.3, 
-                                                    random_state=123)
-num_dims = 114
-num_step = 40
-num_target = 11
+                                                    random_state=123,
+                                                    shuffle=False)
+num_dims = X_train.shape[2]
+num_step = sequence_length
+num_target = len(predict_columns)
+print(f'we use {num_dims} features, {num_step} steps, {num_target} targets')
 #归一化
 scaler_X = preprocessing.StandardScaler().fit(X_train.reshape(-1, num_dims))
 scaler_y = preprocessing.StandardScaler().fit(y_train.reshape(-1, num_target))
@@ -71,23 +73,23 @@ x = Add()([x, x_skip])
 x = RNN(MyICLSTMCell(units=128),return_sequences=True)(x) #只输出最后一个预测的值
 x = Dense(X_train.shape[2], activation='relu', kernel_constraint=tf.keras.constraints.NonNeg())(x)
 x = Add()([x, x_skip])
-x = Dense(11, activation='linear', kernel_constraint=tf.keras.constraints.NonNeg())(x)
+x = Dense(num_target, activation='linear', kernel_constraint=tf.keras.constraints.NonNeg())(x)
 x = x[:,-1,:]
 x = tf.reshape(x, (-1, num_target)) 
 model = Model(input, x)
 
 # 训练配置
 # 1. 定义一个学习率衰减调度器
-from tensorflow.keras.optimizers.schedules import ExponentialDecay
-lr_schedule = ExponentialDecay(
-    initial_learning_rate=1e-3,  # 初始学习率
-    decay_steps=10000,           # 每隔多少 step 衰减一次
-    decay_rate=0.1,             # 衰减系数(例如衰减到原来的96%)
-    staircase=True               # True表示阶梯衰减，False表示连续指数衰减
-)
-optimizer = Adam(learning_rate=lr_schedule, clipnorm=None)
+# from tensorflow.keras.optimizers.schedules import ExponentialDecay
+# lr_schedule = ExponentialDecay(
+#     initial_learning_rate=1e-3,  # 初始学习率
+#     decay_steps=10000,           # 每隔多少 step 衰减一次
+#     decay_rate=0.1,             # 衰减系数(例如衰减到原来的96%)
+#     staircase=True               # True表示阶梯衰减，False表示连续指数衰减
+# )
+optimizer = Adam(learning_rate=1e-3, clipnorm=None)
 model.compile(optimizer=optimizer, loss='mean_squared_error', metrics=[tf.keras.metrics.MeanSquaredError()])
-history = model.fit(X_train, y_train, epochs=15, batch_size=256, validation_split=0.25, verbose=2)
+history = model.fit(X_train, y_train, epochs=50, batch_size=256, validation_split=0.25, verbose=2)
 model.save('iclstm.h5')
 # 预测 & 反归一化
 from sklearn.metrics import mean_squared_error, r2_score
