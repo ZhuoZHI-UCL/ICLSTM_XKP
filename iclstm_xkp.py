@@ -89,7 +89,7 @@ model = Model(input, x)
 # )
 optimizer = Adam(learning_rate=1e-3, clipnorm=None)
 model.compile(optimizer=optimizer, loss='mean_squared_error', metrics=[tf.keras.metrics.MeanSquaredError()])
-history = model.fit(X_train, y_train, epochs=50, batch_size=256, validation_split=0.25, verbose=2)
+history = model.fit(X_train, y_train, epochs=40, batch_size=256, validation_split=0.25, verbose=2)
 model.save('iclstm.h5')
 # 预测 & 反归一化
 from sklearn.metrics import mean_squared_error, r2_score
