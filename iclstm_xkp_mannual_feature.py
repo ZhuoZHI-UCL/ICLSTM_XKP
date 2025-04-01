@@ -19,8 +19,8 @@ tf.random.set_seed(42)
 data = pd.read_csv('simulation_output_0325.csv')
 
 # 配置
-sequence_length = 10
-
+sequence_length = 5
+epochs = 100
 
 input = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr','P1_T_Thermostat_sp_out','P2_T_Thermostat_sp_out','P3_T_Thermostat_sp_out','P4_T_Thermostat_sp_out','Bd_Pw_Bat_sp_out']
 predict_columns = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr']
@@ -89,9 +89,15 @@ model = Model(input, x)
 #     decay_rate=0.1,             # 衰减系数(例如衰减到原来的96%)
 #     staircase=True               # True表示阶梯衰减，False表示连续指数衰减
 # )
+from keras.callbacks import EarlyStopping
+early_stopping = EarlyStopping(
+    monitor='val_loss',       # 监控验证集损失
+    patience=5,              # 如果10个epoch内val_loss没有改善，则停止训练
+    restore_best_weights=True  # 恢复训练过程中表现最好的模型权重
+)
 optimizer = Adam(learning_rate=1e-3, clipnorm=None)
 model.compile(optimizer=optimizer, loss='mean_squared_error', metrics=[tf.keras.metrics.MeanSquaredError()])
-history = model.fit(X_train, y_train, epochs=50, batch_size=256, validation_split=0.25, verbose=2)
+history = model.fit(X_train, y_train, epochs=epochs, batch_size=256, validation_split=0.25, verbose=2, callbacks=[early_stopping])
 model.save('iclstm.h5')
 # 预测 & 反归一化
 from sklearn.metrics import mean_squared_error, r2_score
