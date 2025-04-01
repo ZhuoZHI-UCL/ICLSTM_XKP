@@ -31,8 +31,8 @@ model_path = 'visualization/iclstm_10steps_without_time_feature/iclstm_10steps_w
 sequence_length = 10 
 epochs = 200
 
-input = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr','PV_Gen_corrected','P1_T_Thermostat_sp_out','P2_T_Thermostat_sp_out','P3_T_Thermostat_sp_out','P4_T_Thermostat_sp_out','Bd_Pw_Bat_sp_out', 'Fa_Pw_All', 'Bd_Fl_HP', 'HVAC_Pw_HP']
-predict_columns = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr','PV_Gen_corrected', 'Fa_Pw_All', 'Bd_Fl_HP', 'HVAC_Pw_HP']
+input = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Fa_E_Appl','Fa_E_Light','Fa_Pw_All','HVAC_Pw_HP','Ext_T','Ext_Irr','PV_Gen_corrected','P1_T_Thermostat_sp_out','P2_T_Thermostat_sp_out','P3_T_Thermostat_sp_out','P4_T_Thermostat_sp_out','Bd_Pw_Bat_sp_out']
+predict_columns = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Fa_E_Appl','Fa_E_Light','Fa_Pw_All','HVAC_Pw_HP','Ext_T','Ext_Irr','PV_Gen_corrected']
 
 
 
