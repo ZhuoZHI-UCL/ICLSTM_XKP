@@ -1,0 +1,14 @@
+Test MSE: [902.58827089 981.16926986]
+MSE Average: 941.8787703703827
+Test MAPE: [8.86146165e+14 3.11439869e+15]
+MAPE Average: 2000272425796410.5
+Test R2: [0.99006244 0.9877621 ]
+R2 Average: 0.9889122716298329
+Training Samples: 5033
+Testing Samples: 2157
+Input Features: 140
+Input Steps: 10
+Target Variables: 2
+Batch Size: 256
+Total Epochs: 80
+Training Time (s): 26.09

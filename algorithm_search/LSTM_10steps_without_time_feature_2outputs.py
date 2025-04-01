@@ -19,22 +19,23 @@ tf.random.set_seed(42)
 
 # 路径配置
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
-visualization_path = 'visualization/lstm_480steps_without_time_feature/'
+visualization_path = 'visualization/LSTM_10steps_without_time_feature_2outputs/'
 os.makedirs(visualization_path, exist_ok=True)
 test_result_path = os.path.join(visualization_path, 'test_result.txt')
-model_path = os.path.join(visualization_path, 'lstm_480steps_without_time_feature.h5')
+model_path = os.path.join(visualization_path, 'LSTM_10steps_without_time_feature_2outputs.h5')
 
 # 数据读取
 data = pd.read_csv('simulation_output.csv')
 
-sequence_length = 480
+sequence_length = 10
 epochs = 200
 
-input = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr','PV_Gen_corrected','P1_T_Thermostat_sp_out','P2_T_Thermostat_sp_out','P3_T_Thermostat_sp_out','P4_T_Thermostat_sp_out','Bd_Pw_Bat_sp_out']
-predict_columns = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr','PV_Gen_corrected']
+# input = ['Z01_T','Z02_T','Z03_T','Z04_T','Z05_T','Z06_T','Z07_T','Z08_T','Bd_FracCh_Bat','Fa_Pw_Prod','Fa_E_All','Fa_E_HVAC','Ext_T','Ext_Irr','PV_Gen_corrected','P1_T_Thermostat_sp_out','P2_T_Thermostat_sp_out','P3_T_Thermostat_sp_out','P4_T_Thermostat_sp_out','Bd_Pw_Bat_sp_out']
+not_use_columns = ['Timestamp', 'Month', 'Day', 'Hour', 'Minute']
+predict_columns = ['Fa_E_All','Fa_E_HVAC']
 
 # 获取列索引
-input_columns = [col for col in data.columns if col in input]
+input_columns = [col for col in data.columns if col not in not_use_columns]
 input_indices = [data.columns.get_loc(col) for col in input_columns]
 target_indices = [data.columns.get_loc(col) for col in predict_columns]
 
