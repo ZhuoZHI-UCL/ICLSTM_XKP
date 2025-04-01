@@ -13,6 +13,8 @@ import time
 import os
 
 # 设置随机种子
+random.seed(42)
+np.random.seed(42)
 tf.random.set_seed(42)
 
 # 路径配置

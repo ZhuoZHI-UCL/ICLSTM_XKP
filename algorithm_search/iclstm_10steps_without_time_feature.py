@@ -16,6 +16,8 @@ from ICLSTM import MyICLSTMCell
 import time
 import os
 # set the seed for reproducibility
+random.seed(42)
+np.random.seed(42)
 tf.random.set_seed(42)
 # 读取数据
 data = pd.read_csv('simulation_output.csv')
